@@ -11,8 +11,8 @@
 - 极速处理，使用GTX1660，2s可处理2分钟的音频
 
 
-作者:盒子AI
-更多资源：[https://mgkjgw.top](https://mgkjgw.top)
+## 作者: 盒子AI
+## 更多资源：[https://mgkjgw.top](https://mgkjgw.top)  
 
 
 
@@ -34,20 +34,10 @@ pip install funasr modelscope
 
 ## 参数配置详解
 
-(基本上不用配置)
-
-
 | 参数项           | 类型           | 默认值              | 说明                   |
 | ------------------ | ---------------- | --------------------- | ------------------------ |
 | 音频输入         | AUDIO          | -                   | 支持波形数据或文件路径 |
 | 模型名称         | string         | iic/SenseVoiceSmall | 语音识别模型路径       |
-| VAD模型          | string         | fsmn-vad            | 语音活性检测模型       |
-| 最大分段时长(ms) | int            | 30000               | 单段音频最大持续时间   |
-| 语言选项         | list           | auto                | 自动识别/指定语言      |
-| ITN处理          | enable/disable | enable              | 智能文本规范化         |
-| 批处理时长(s)    | int            | 60                  | 批处理时间窗口         |
-| 合并VAD          | enable/disable | enable              | 合并相邻语音段         |
-
 ## 模型下载指引
 
 1. 推荐模型：
@@ -58,7 +48,7 @@ pip install funasr modelscope
 
 ## 示例输出
 
-![](assets\20250306_153420_image.png)
+![](assets/20250306_153420_image.png)
 
 ```
 欢迎使用达摩语音识别系统，当前时间为下午3点整。
@@ -70,4 +60,4 @@ pip install funasr modelscope
 - 建议使用NVIDIA显卡加速运算
 - 长音频处理可能需要较大内存
 - 测试环境：
-![](assets\20250306_153627_image.png)
+![](assets/20250306_153627_image.png)
