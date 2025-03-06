@@ -11,8 +11,8 @@
 - 极速处理，使用GTX1660，2s可处理2分钟的音频
 
 
-## 作者: 盒子AI
-## 更多资源：[https://mgkjgw.top](https://mgkjgw.top)  
+### 作者: 盒子AI
+### 更多资源：[https://mgkjgw.top](https://mgkjgw.top)  
 
 
 
@@ -46,18 +46,15 @@ pip install funasr modelscope
 2. 模型自动下载到 `ComfyUI-FunASR/models/` 目录
 3. 手动下载地址：[ModelScope](https://modelscope.cn/models/iic/SenseVoiceSmall)
 
-## 示例输出
+## 示例输出  
 
 ![](assets/20250306_153420_image.png)
 
-```
-欢迎使用达摩语音识别系统，当前时间为下午3点整。
-```
 
 ## 注意事项
 
 - 首次使用会自动下载模型文件（约2-3GB）
 - 建议使用NVIDIA显卡加速运算
 - 长音频处理可能需要较大内存
-- 测试环境：
+- 测试环境：  
 ![](assets/20250306_153627_image.png)
