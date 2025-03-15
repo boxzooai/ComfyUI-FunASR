@@ -1,2 +1,5 @@
 funasr
 transformers
+moviepy
+imageio
+imageio-ffmpeg

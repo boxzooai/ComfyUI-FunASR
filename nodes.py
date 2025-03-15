@@ -5,17 +5,21 @@ import uuid
 from funasr import AutoModel
 from funasr.utils.postprocess_utils import rich_transcription_postprocess
 import re
+import io
+
+video_extensions = ['webm', 'mp4', 'mkv', 'gif', 'mov']
 
 class DamoASRNode:
     def __init__(self):
         self.loadmodel = None
+        self.wave_file_name = None
         pass
 
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "audio": ("AUDIO", {"display_name": "音频输入"}),
+                "sample_audio": ("AUDIO",),
                 "model_name": ("STRING", {"default": "iic/SenseVoiceSmall", "display_name": "模型名称"}),
                 "vad_model": ("STRING", {"default": "fsmn-vad", "display_name": "VAD模型"}),
                 "vad_max_time": ("INT", {"default": 30000, "display_name": "最大分段时长(ms)"}),
@@ -32,16 +36,49 @@ class DamoASRNode:
     FUNCTION = "execute"
     CATEGORY = "audio"
 
-    def execute(self, audio, model_name, vad_model, vad_max_time, language, use_itn, batch_size_s, merge_vad, merge_length_s):
+    def load_voice_from_input(self, sample_audio):
+        wave_file = tempfile.NamedTemporaryFile(
+            suffix=".wav", delete=False
+            )
+        self.wave_file_name = wave_file.name
+        wave_file.close()
+
+        hasAudio = False
+        for (batch_number, waveform) in enumerate(
+            sample_audio["waveform"].cpu()
+        ):
+            buff = io.BytesIO()
+            torchaudio.save(
+                buff, waveform, sample_audio["sample_rate"], format="WAV"
+                )
+            with open(self.wave_file_name, 'wb') as f:
+                f.write(buff.getbuffer())
+            hasAudio = True
+            break
+        if not hasAudio:
+            raise FileNotFoundError("No audio input")
+        return self.wave_file_name
+
+    def remove_wave_file(self):
+        if self.wave_file_name is not None:
+            try:
+                os.unlink(self.wave_file_name)
+                self.wave_file_name = None
+            except Exception as e:
+                print("Cannot remove? " + self.wave_file_name)
+                print(e)
+
+    def execute(self, sample_audio, model_name, vad_model, vad_max_time, language, use_itn, batch_size_s, merge_vad, merge_length_s):
         model_path = os.path.dirname(__file__)
         os.makedirs(model_path, exist_ok=True)
-        if isinstance(audio, dict):
-            temp_dir = tempfile.gettempdir()
-            temp_path = os.path.join(temp_dir, f"audio_input_{uuid.uuid4().hex}.wav")
-            torchaudio.save(temp_path, audio['waveform'].squeeze(0), audio['sample_rate'])
-            audio_path = temp_path
-        else:
-            audio_path = audio
+        audio_path = self.load_voice_from_input(sample_audio)
+        # if isinstance(audio, dict):
+        #     temp_dir = tempfile.gettempdir()
+        #     temp_path = os.path.join(temp_dir, f"audio_input_{uuid.uuid4().hex}.wav")
+        #     torchaudio.save(temp_path, audio['waveform'].squeeze(0), audio['sample_rate'])
+        #     audio_path = temp_path
+        # else:
+        #     audio_path = audio
 
         os.environ["MODELSCOPE_CACHE"] = model_path
 
