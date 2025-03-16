@@ -9,6 +9,7 @@ import io
 
 video_extensions = ['webm', 'mp4', 'mkv', 'gif', 'mov']
 
+
 class DamoASRNode:
     def __init__(self):
         self.loadmodel = None
@@ -39,18 +40,18 @@ class DamoASRNode:
     def load_voice_from_input(self, sample_audio):
         wave_file = tempfile.NamedTemporaryFile(
             suffix=".wav", delete=False
-            )
+        )
         self.wave_file_name = wave_file.name
         wave_file.close()
 
         hasAudio = False
         for (batch_number, waveform) in enumerate(
-            sample_audio["waveform"].cpu()
+                sample_audio["waveform"].cpu()
         ):
             buff = io.BytesIO()
             torchaudio.save(
                 buff, waveform, sample_audio["sample_rate"], format="WAV"
-                )
+            )
             with open(self.wave_file_name, 'wb') as f:
                 f.write(buff.getbuffer())
             hasAudio = True
@@ -68,18 +69,11 @@ class DamoASRNode:
                 print("Cannot remove? " + self.wave_file_name)
                 print(e)
 
-    def execute(self, sample_audio, model_name, vad_model, vad_max_time, language, use_itn, batch_size_s, merge_vad, merge_length_s):
+    def execute(self, sample_audio, model_name, vad_model, vad_max_time, language, use_itn, batch_size_s, merge_vad,
+                merge_length_s):
         model_path = os.path.dirname(__file__)
         os.makedirs(model_path, exist_ok=True)
         audio_path = self.load_voice_from_input(sample_audio)
-        # if isinstance(audio, dict):
-        #     temp_dir = tempfile.gettempdir()
-        #     temp_path = os.path.join(temp_dir, f"audio_input_{uuid.uuid4().hex}.wav")
-        #     torchaudio.save(temp_path, audio['waveform'].squeeze(0), audio['sample_rate'])
-        #     audio_path = temp_path
-        # else:
-        #     audio_path = audio
-
         os.environ["MODELSCOPE_CACHE"] = model_path
 
         if self.loadmodel is None or self.current_model_name != model_name:
