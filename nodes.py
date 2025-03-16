@@ -84,8 +84,7 @@ class DamoASRNode:
                 vad_model=vad_model,
                 vad_kwargs={"max_single_segment_time": vad_max_time},
                 trust_remote_code=True,
-                remote_code=os.path.join(os.path.dirname(__file__), "model.py"),
-                device="cuda:0"
+                remote_code=os.path.join(os.path.dirname(__file__), "model.py")
             )
 
         res = self.loadmodel.generate(
